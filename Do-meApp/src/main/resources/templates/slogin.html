@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ログインページ</title>
+<script src="/js/slogin.js/"></script>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	color: #333;
+}
+
+form {
+	max-width: 300px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+	display: block;
+	text-align: left;
+	margin: 10px 0;
+	color: #555;
+}
+
+input {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 15px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+input[type="submit"] {
+	background-color: #ff84c1;
+	color: #fff;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	background-color: #ffb6c1;
+}
+</style>
+</head>
+
+<body>
+	<h1>LOGIN PAGE</h1>
+	<form th:action="@{/slogin}" method="POST">
+		<label>学籍番号</label> <input type="number" name="user_id" id="user_id">
+		<input type="submit" value="ログイン"> <input type="submit"
+			value="管理者画面" name="administrator">
+	</form>
+	<div id="menu"></div>
+</body>
+
+</html>

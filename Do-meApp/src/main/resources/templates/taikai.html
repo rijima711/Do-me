@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>スポーツ大会ページ</title>
+<style>
+h1, button {
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	font-size: 100px;
+	float: left;
+}
+
+#login {
+	padding: 10px;
+	margin: 0;
+	text-align: center;
+	float: right;
+	border-radius: 15px;
+	background: linear-gradient(45deg, #ff69b4, #e066ff);
+	color: #f5f5f5;
+	font-size: 75%;
+}
+
+#login p {
+	margin: 0;
+}
+
+img {
+	float: right;
+}
+
+hr {
+	clear: both;
+}
+
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+select {
+	margin: 20px;
+	font-size: 20px;
+}
+
+table {
+	width: 80%;
+	margin: 20px auto;
+	border-collapse: collapse;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+
+th {
+	background-color: #40e0d0;
+	color: white;
+}
+
+img {
+	width: 100px;
+	height: 100px;
+}
+</style>
+</head>
+
+<body>
+	<h1>KRCドーム</h1>
+	<div id="login">
+		<p>
+			<span th:text="${user_name}"></span>
+		</p>
+		<p>
+			<span th:if="${user_name == null}" th:text="'User Name is null'"></span>
+		</p>
+		<p>ログイン中</p>
+	</div>
+
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
+		alt="ログアウトボタン" height="100px" />
+	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
+	<script>
+		document.getElementById("logout-button").addEventListener("click",
+				function() {
+					window.location.href = "/logout";
+				});
+	</script>
+	<img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px" />
+
+	<hr>
+	<h1>スポーツ大会ページ</h1>
+
+	<!-- 大会選択プルダウンメニュー -->
+	<form th:action="@{/taikai}" method="GET">
+		<label for="tournamentSelect">大会選択:</label> <select
+			id="tournamentSelect" name="tournament">
+			<!-- データベースから取得した大会名を反復処理して表示 -->
+			<option th:each="tournament : ${selectResult}"
+				th:value="${tournament.tournament_id}"
+				th:text="${tournament.tournament_name}"></option>
+		</select> <input type="submit" value="選択">
+	</form>
+
+	<!-- 選択した大会の詳細情報表示 -->
+	DBの内容:
+	<br>
+	<table>
+		<tr>
+			<th>大会ID</th>
+			<th>大会名</th>
+			<th>大会データ</th>
+			<th>大会画像</th>
+		</tr>
+		<tr th:each="tournament : ${dome_sports}">
+			<td th:text="${tournament.tournament_id}"></td>
+			<td th:text="${tournament.tournament_name}"></td>
+			<td th:text="${tournament.tournament_data}"></td>
+			<td><img
+				th:src="${'data:image/png;base64,' + tournament.tournament_image}"
+				alt="Tournament Image" /></td>
+		</tr>
+	</table>
+
+</body>
+
+</html>

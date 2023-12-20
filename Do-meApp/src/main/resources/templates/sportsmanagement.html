@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>スポーツ大会管理</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	color: #333;
+}
+
+table {
+	width: 80%;
+	margin: 20px auto;
+	border-collapse: collapse;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 10px;
+	text-align: center;
+}
+
+th {
+	background-color: #40e0d0;
+	color: white;
+}
+
+img {
+	max-width: 100px;
+	max-height: 100px;
+}
+
+#login p {
+	margin: 0;
+}
+
+img {
+	float: right;
+}
+
+hr {
+	clear: both;
+}
+
+#menu {
+	text-align: center;
+}
+
+form {
+	max-width: 300px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+	display: block;
+	text-align: left;
+	margin: 10px 0;
+	color: #555;
+}
+
+input {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 15px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+input[type="submit"] {
+	background-color: #40e0d0;
+	color: #fff;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	background-color: #48d1cc;
+}
+</style>
+</head>
+<body>
+	<h1>KRCドーム</h1>
+	<div id="login">
+		<p>
+			<span th:text="${user_name}"></span>
+		</p>
+		<p>
+			<span th:if="${user_name == null}" th:text="'User Name is null'"></span>
+		</p>
+		<p>ログイン中</p>
+	</div>
+
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
+		alt="ログアウトボタン" height="100px" />
+	<script>
+        document.getElementById("logout-button").addEventListener("click", function() {
+            window.location.href = "/logout";
+        });
+    </script>
+	<img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px" />
+
+	<hr>
+	<h1>スポーツ大会管理</h1>
+
+	<!-- 登録済み大会データ -->
+	<h2>登録済み大会データ</h2>
+	<table>
+		<tr>
+			<th>大会ID</th>
+			<th>大会名</th>
+			<th>大会画像</th>
+			<th>登録日</th>
+			<!-- 日付のみ表示に変更 -->
+		</tr>
+		<tr th:each="tournament : ${selectResult}">
+			<td th:text="${tournament.tournament_id}"></td>
+			<td th:text="${tournament.tournament_name}"></td>
+			<td><img
+				th:src="'data:image/jpeg;base64,' + ${tournament.tournament_image}"
+				alt="Tournament Image" /></td>
+			<td
+				th:text="${#dates.format(tournament.tournament_data, 'yyyy-MM-dd')}"></td>
+			<!-- 修正点 -->
+		</tr>
+	</table>
+
+	<!-- 新規大会データ登録 -->
+	<h2>新規大会データ登録</h2>
+	<form th:action="@{/sportsmanagement}" method="POST"
+		enctype="multipart/form-data">
+		<label>大会名</label> <input type="text" name="tournament_name" required><br>
+		<!-- 大会画像 -->
+		<label>大会画像</label> <input type="file" name="tournament_image"
+			accept="image/*" required><br> <input type="submit"
+			value="登録">
+	</form>
+
+</body>
+</html>

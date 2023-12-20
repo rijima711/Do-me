@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>管理者ログインページ</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	color: #333;
+}
+
+form {
+	max-width: 300px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+	display: block;
+	text-align: left;
+	margin: 10px 0;
+	color: #555;
+}
+
+input {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 15px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+input[type="submit"] {
+	background-color: #40e0d0;
+	color: #fff;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	background-color: #48d1cc;
+}
+</style>
+</head>
+
+<body>
+	<h1>MANAGEMENT LOGIN PAGE</h1>
+	<form th:action="@{/administrator}" method="POST">
+		<label>管理者ID</label> <input type="text" name="user_id" id="user_id">
+		<label>パスワード</label> <input type="password" name="password"
+			id="password"> <input type="submit" value="ログイン">
+	</form>
+</body>
+
+</html>
