@@ -13,14 +13,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.entity.Dome_calendar;
 import com.example.demo.entity.Dome_reservation;
 import com.example.demo.entity.Dome_versus;
+import com.example.demo.repository.Dome_calendarRepository;
 import com.example.demo.repository.Dome_reservationRepository;
 import com.example.demo.repository.Dome_versusRepository;
 
@@ -32,11 +35,12 @@ import jakarta.servlet.http.HttpSession;
 public class DomeController {
 	@Autowired
 	Dome_reservationRepository dome_reservationRepository;
-	//Dome_userRepository dome_userRepository;
 	@Autowired
 	Dome_versusRepository dome_versusRepository;
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+	@Autowired
+	Dome_calendarRepository dome_calendar;
 
 	//ログイン機能
 	@RequestMapping(path = "/slogin", method = RequestMethod.GET)
@@ -45,13 +49,8 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/slogin", method = RequestMethod.POST)
-	public String slogin(String user_id, RedirectAttributes redirectAttributes, HttpSession session,
-			String administrator)
+	public String slogin(String user_id, RedirectAttributes redirectAttributes, HttpSession session)
 			throws IOException {
-		//管理者画面への遷移
-		if (administrator != null) {
-			return "redirect:/administrator";
-		}
 		List<Map<String, Object>> resultList = null;
 		resultList = jdbcTemplate.queryForList("SELECT * FROM dome_user WHERE user_id = ?", user_id);
 
@@ -59,9 +58,12 @@ public class DomeController {
 			String user_name = (String) resultList.get(0).get("user_name");
 			redirectAttributes.addAttribute("user_name", user_name);
 
+			String year_class = (String) resultList.get(0).get("year_class");
+
 			// セッションにユーザーIDを保存
 			session.setAttribute("user_id", user_id);
 			session.setAttribute("user_name", user_name);
+			session.setAttribute("year_class", year_class);
 
 			return "redirect:/mainmenu";
 		} else {
@@ -82,6 +84,7 @@ public class DomeController {
 		return "redirect:/slogin";
 	}
 
+	//メインメニュー
 	@RequestMapping(path = "/mainmenu", method = RequestMethod.GET)
 	public String mainmenu(Model model, String user_name, HttpSession session) throws IOException {
 		// セッションからユーザーIDを取得
@@ -117,61 +120,83 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/yoyaku", method = RequestMethod.POST)
-	public String yoyaku(String court, String date, String versus, RedirectAttributes redirectAttributes,
-			HttpSession session)
+	public String yoyaku(String court, String date, String versus, HttpSession session)
 			throws IOException {
+		String year_class = (String) session.getAttribute("year_class");
+		String title = year_class + "・" + court + "コート";
+
 		String user_id = (String) session.getAttribute("user_id");
-		//		String user_id = (String) redirectAttributes.getFlashAttributes().get("user_id");
 		Dome_reservation myReservation = new Dome_reservation();
-		try {
-			if (user_id != null) {
-				if (versus != null) {
-					myReservation.setDate(date);
-					myReservation.setCourt(court);
-					myReservation.setVersus(Integer.parseInt(versus));
-					myReservation.setUser_id(Integer.parseInt(user_id));
-					dome_reservationRepository.save(myReservation);
-					return "redirect:/yoyaku_done";
-				} else {
-					myReservation.setDate(date);
-					myReservation.setCourt(court);
-					myReservation.setUser_id(Integer.parseInt(user_id));
-					dome_reservationRepository.save(myReservation);
-					return "redirect:/yoyaku_done";
-				}
-			} else {
-				return "redirect:/yoyaku";
-			}
-		} catch (NumberFormatException e) {
-			// エラーが発生した場合の処理
-			e.printStackTrace(); // エラーをコンソールに表示
-			// 例: エラーページにリダイレクト
-			return "redirect:/error";
+
+		// 重複チェック
+		List<Dome_reservation> reservationCheck = dome_reservationRepository.findByDateAndCourt(date, court);
+		if (!reservationCheck.isEmpty()) {
+			return "redirect:/yoyaku_error"; // 重複がある場合の処理
 		}
+
+		//予約テーブルに保存
+		if (versus != null) {
+			myReservation.setDate(date);
+			myReservation.setCourt(court);
+			myReservation.setVersus(Integer.parseInt(versus));
+			myReservation.setUser_id(Integer.parseInt(user_id));
+			dome_reservationRepository.save(myReservation);
+
+		} else {
+			myReservation.setDate(date);
+			myReservation.setCourt(court);
+			myReservation.setUser_id(Integer.parseInt(user_id));
+			dome_reservationRepository.save(myReservation);
+		}
+		calendar(title, date);
+
+		return "redirect:/yoyaku_done";
+
 	}
 
-	//予約完了画面
+	////予約状況確認のカレンダーテーブルに保存
+	//@RequestMapping(path = "/calendar", method = RequestMethod.GET)
+	public void calendar(String title, String start) throws IOException {
+		//予約状況確認のカレンダーテーブルに保存
+		Dome_calendar myCalendar = new Dome_calendar();
+
+		myCalendar.setTitle(title);
+		myCalendar.setStart(start);
+		dome_calendar.save(myCalendar);
+		return;
+
+	}
+
+	//	@RequestMapping(path = "/calendar", method = RequestMethod.POST)
+	//	public String calendar(HttpSession session) throws IOException {
+	//		return "yoyaku";
+	//
+	//	}
+
+	//予約完了
 	@RequestMapping(path = "/yoyaku_done", method = RequestMethod.GET)
-	public String kanryou(Model model, HttpSession session) throws IOException {
+	public String yoyaku_done(Model model, String user_name, HttpSession session) throws IOException {
+
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
 		return "yoyaku_done";
+
 	}
 
 	@RequestMapping(path = "/yoyaku_done", method = RequestMethod.POST)
-	public String kanryou(RedirectAttributes redirectAttributes, String kanryou) throws IOException {
-		// リダイレクト先での user_name 表示が必要ない場合は何もしなくても良い
+	public String yoyaku_done(RedirectAttributes redirectAttributes, String kanryou) throws IOException {
+
 		return "redirect:/mainmenu";
+
 	}
 
 	//予約状況確認画面
 	@RequestMapping(path = "/joukyou", method = RequestMethod.GET)
 	public String joukyou(Model model, String user_name, HttpSession session) throws IOException {
-		List<Dome_reservation> reservationlist = dome_reservationRepository.findAll();
-		model.addAttribute("reservationlist", reservationlist);
 		// セッションからユーザーIDを取得
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
+
 		return "joukyou";
 	}
 
@@ -184,9 +209,12 @@ public class DomeController {
 	//対戦予約画面
 	@RequestMapping(path = "/taisen", method = RequestMethod.GET)
 	public String taisen(Model model, String user_name, HttpSession session) throws IOException {
-		List<Dome_reservation> reservationlist = dome_reservationRepository.findByVersus(1);
 
-		model.addAttribute("reservationlist", reservationlist);
+		List<Map<String, Object>> resultList = null;
+		resultList = jdbcTemplate.queryForList(
+				"SELECT a.reservation_id,a.date,a.court,b.user_id,b.year_class,b.user_name FROM dome_reservation a INNER JOIN dome_user b ON a.user_id = b.user_id WHERE a.versus = 1;");
+		model.addAttribute("resultList", resultList);
+
 		// セッションからユーザーIDを取得
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
@@ -194,40 +222,79 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/taisen", method = RequestMethod.POST)
-	public String taisen(String taisenyoyaku) throws IOException {
-
+	public String taisen(String taisenyoyaku, HttpSession session, String reservationId) throws IOException {
+		String year_class = (String) session.getAttribute("year_class");
 		Dome_versus myVersus = new Dome_versus();
+		myVersus.setReservation_id(Integer.parseInt(reservationId));
+		myVersus.setVersus_class(year_class);
+		dome_versusRepository.save(myVersus);
 
-		//Dome_versusRepository.save(myVersus);
-
-		return "taisen";
+		return "redirect:/yoyaku_done";
 	}
 
-	//スポーツ大会画面
-	@RequestMapping(path = "/taikai", method = RequestMethod.GET)
-	public String taikai(Model model, String user_name, HttpSession session) throws IOException {
+	//スポーツ大会機能
+	@GetMapping("/taikai")
+	public String taikai(Model model, HttpSession session) {
 		// セッションからユーザーIDを取得
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
 
-		//SELECT文の結果をしまうためのリスト
+		// SELECT文の結果をしまうためのリスト
 		List<Map<String, Object>> resultList;
 
-		//SELECT文の実行
-		resultList = jdbcTemplate.queryForList("select * from dome_sports");
+		// SELECT文の実行
+		resultList = jdbcTemplate.queryForList("SELECT tournament_name FROM dome_sports");
 
-		//実行結果をmodelにしまってHTMLで出せるようにする。
-		model.addAttribute("dome_sports", resultList);
+		// 実行結果をmodelにしまってHTMLで出せるようにする。
+		model.addAttribute("selectResult", resultList);
 
 		return "taikai";
 	}
 
-	@RequestMapping(path = "/taikai", method = RequestMethod.POST)
-	public String taikai(Model model) throws IOException {
-		
+	@GetMapping("/tournament/{tournamentName}")
+	public String showTournament(@PathVariable String tournamentName, Model model) {
+		// 大会名に基づいてデータを取得するSELECT文
+		String sql = "SELECT * FROM dome_sports WHERE tournament_name = ?";
+		// 大会名に基づいてデータを取得
+		Map<String, Object> tournamentData = jdbcTemplate.queryForMap(sql, tournamentName);
 
-		return "redirect:/taikai";
+		// 取得したデータをモデルに追加
+		model.addAttribute("tournamentData", tournamentData);
+
+		return "tournament";
 	}
+
+	//	 @GetMapping("/taikai")
+	//	    public String taikai(Model model, HttpSession session) {
+	//	        // セッションからユーザーIDを取得
+	//	        String username = (String) session.getAttribute("user_name");
+	//	        model.addAttribute("user_name", username);
+	//
+	//	        // SELECT文の結果をしまうためのリスト
+	//	        List<Map<String, Object>> resultList;
+	//
+	//	        // SELECT文の実行
+	//	        resultList = jdbcTemplate.queryForList("SELECT * FROM dome_sports");
+	//
+	//	        // 実行結果をmodelにしまってHTMLで出せるようにする。
+	//	        model.addAttribute("selectResult", resultList);
+	//
+	//	        return "taikai";
+	//	    }
+
+	//
+	//	@RequestMapping(path = "/taikai", method = RequestMethod.POST)
+	//	public String taikai(Model model) throws IOException {
+	//	    //SELECT文の結果をしまうためのリスト
+	//	    List<Map<String, Object>> resultList;
+	//
+	//	    //SELECT文の実行
+	//	    resultList = jdbcTemplate.queryForList("select * from dome_sports");
+	//
+	//	    //実行結果をmodelにしまってHTMLで出せるようにする。
+	//	    model.addAttribute("dome_sports", resultList);
+	//	    return "taikai";
+	//	}
 
 	//管理者ログイン画面
 	@RequestMapping(path = "/administrator", method = RequestMethod.GET)
@@ -349,24 +416,22 @@ public class DomeController {
 
 	@RequestMapping(path = "/sportsmanagement", method = RequestMethod.POST)
 	public String sportsmanagement(@RequestParam("tournament_image") MultipartFile tournament_image,
-	        @RequestParam("tournament_name") String tournament_name,
-	        Model model) throws IOException {
+			@RequestParam("tournament_name") String tournament_name,
+			Model model) throws IOException {
 
-	    byte[] byteData = tournament_image.getBytes();
-	    String encodedImage = Base64.getEncoder().encodeToString(byteData);
+		byte[] byteData = tournament_image.getBytes();
+		String encodedImage = Base64.getEncoder().encodeToString(byteData);
 
-	    // 現在の日時を取得
-	    Instant currentInstant = Instant.now();
-	    Timestamp tournament_data = Timestamp.from(currentInstant);
+		// 現在の日時を取得
+		Instant currentInstant = Instant.now();
+		Timestamp tournament_data = Timestamp.from(currentInstant);
 
-	    // データベースに新しい大会データを挿入
-	    jdbcTemplate.update(
-	            "INSERT INTO dome_sports (tournament_image, tournament_name, tournament_data) VALUES (?, ?, ?)",
-	            encodedImage, tournament_name, tournament_data);
+		// データベースに新しい大会データを挿入
+		jdbcTemplate.update(
+				"INSERT INTO dome_sports (tournament_image, tournament_name, tournament_data) VALUES (?, ?, ?)",
+				encodedImage, tournament_name, tournament_data);
 
-	    return "redirect:/sportsmanagement";
+		return "redirect:/sportsmanagement";
 	}
-
-
 
 }

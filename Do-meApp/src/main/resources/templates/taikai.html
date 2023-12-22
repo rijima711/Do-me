@@ -45,11 +45,6 @@ body {
 	padding: 0;
 }
 
-select {
-	margin: 20px;
-	font-size: 20px;
-}
-
 table {
 	width: 80%;
 	margin: 20px auto;
@@ -90,47 +85,42 @@ img {
 		alt="ログアウトボタン" height="100px" />
 	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
 	<script>
-		document.getElementById("logout-button").addEventListener("click",
-				function() {
-					window.location.href = "/logout";
-				});
-	</script>
+        document.getElementById("logout-button").addEventListener("click",
+                function() {
+                    window.location.href = "/logout";
+                });
+    </script>
 	<img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px" />
 
 	<hr>
 	<h1>スポーツ大会ページ</h1>
 
-	<!-- 大会選択プルダウンメニュー -->
-	<form th:action="@{/taikai}" method="GET">
-		<label for="tournamentSelect">大会選択:</label> <select
-			id="tournamentSelect" name="tournament">
-			<!-- データベースから取得した大会名を反復処理して表示 -->
+	<form method="get" action="/tournament">
+		<label for="tournamentList">大会名選択：</label> <select id="tournamentList"
+			name="tournamentName">
 			<option th:each="tournament : ${selectResult}"
-				th:value="${tournament.tournament_id}"
-				th:text="${tournament.tournament_name}"></option>
-		</select> <input type="submit" value="選択">
+				th:text="${tournament.tournament_name}"
+				th:value="${tournament.tournament_name}"></option>
+		</select> <input type="submit" value="詳細を表示" />
 	</form>
 
-	<!-- 選択した大会の詳細情報表示 -->
-	DBの内容:
-	<br>
 	<table>
 		<tr>
 			<th>大会ID</th>
 			<th>大会名</th>
-			<th>大会データ</th>
 			<th>大会画像</th>
+			<th>登録日</th>
 		</tr>
-		<tr th:each="tournament : ${dome_sports}">
+		<!-- ここで選択された大会名に基づいて詳細な情報を表示 -->
+		<tr th:each="tournament : ${selectResult}">
 			<td th:text="${tournament.tournament_id}"></td>
 			<td th:text="${tournament.tournament_name}"></td>
-			<td th:text="${tournament.tournament_data}"></td>
 			<td><img
-				th:src="${'data:image/png;base64,' + tournament.tournament_image}"
+				th:src="'data:image/jpeg;base64,' + ${tournament.tournament_image}"
 				alt="Tournament Image" /></td>
+			<td
+				th:text="${#dates.format(tournament.tournament_data, 'yyyy-MM-dd')}"></td>
 		</tr>
 	</table>
-
 </body>
-
 </html>

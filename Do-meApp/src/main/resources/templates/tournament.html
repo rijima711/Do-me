@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>大会詳細</title>
+    <!-- 他の必要なCSSやスタイルをここに追加 -->
+</head>
+<body>
+    <h1 th:text="${tournamentData.tournament_name}"></h1>
+
+    <!-- 他の大会データの表示もここに追加 -->
+
+    <!-- 画像を表示 -->
+    <img th:src="'data:image/jpeg;base64,' + ${tournamentData.tournament_image}" alt="Tournament Image" />
+
+    <!-- 他の大会データの表示もここに追加 -->
+
+    <!-- 他の必要なHTMLやスクリプトをここに追加 -->
+</body>
+</html>
