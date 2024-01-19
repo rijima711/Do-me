@@ -13,7 +13,7 @@
 			locale : 'ja',
 			businessHours : true,
 			navLinkes : true
-​
+
 		});
 		calendar.render();
 	});
@@ -25,12 +25,12 @@ h1, button {
 	margin: 0;
 	padding: 0;
 }
-​
+
 h1 {
 	font-size: 100px;
 	float: left;
 }
-​
+
 #login {
 	padding: 10px;
 	margin: 0; /* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
@@ -41,28 +41,28 @@ h1 {
 	color: #f5f5f5;
 	font-size: 75%;
 }
-​
+
 #login p {
 	margin: 0; /* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
 }
-​
+
 img {
 	float: right;
 }
-​
+
 hr {
 	clear: both;
 }
-​
+
 #calender {
 	max-width: 1000px;
 	margin: 0 auto;
 }
-​
+
 #calender td.fc-day-today {
 	background-color: #FFFACD;
 }
-​
+
 #calender td.holiday {
 	background-color: #FFE4E1;
 }
@@ -70,7 +70,7 @@ hr {
 </head>
 <body>
 	<h1>KRCドーム</h1>
-​
+
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>
@@ -80,7 +80,7 @@ hr {
 		</p>
 		<p>ログイン中</p>
 	</div>
-​
+
 	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
 		alt="ログアウトボタン" height="100px" />
 	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
@@ -91,10 +91,11 @@ hr {
 				});
 	</script>
 	<img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px">
-​
+
 	<hr>
+	<button type="button" onclick="history.back()">前のページへ戻る</button>
 	<div id='calendar'></div>
-​
-​
+
+
 </body>
 </html>

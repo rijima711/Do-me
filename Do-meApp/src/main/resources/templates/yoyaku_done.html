@@ -66,8 +66,8 @@ span {
 				});
 	</script>
 	<img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px">
-
 	<hr>
+	<button type="button" onclick="history.back()">前のページへ戻る</button>
 	<span>予約完了しました。</span>
 
 	<form th:action="@{/yoyaku_done}" method="POST">

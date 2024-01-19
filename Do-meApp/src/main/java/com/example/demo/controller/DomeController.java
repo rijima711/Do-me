@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,11 +48,14 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/slogin", method = RequestMethod.POST)
-	public String slogin(String user_id, RedirectAttributes redirectAttributes, HttpSession session)
+	public String slogin(String user_id, String administrator, RedirectAttributes redirectAttributes,
+			HttpSession session)
 			throws IOException {
 		List<Map<String, Object>> resultList = null;
 		resultList = jdbcTemplate.queryForList("SELECT * FROM dome_user WHERE user_id = ?", user_id);
-
+		if (administrator != null) {
+			return "redirect:/administrator";
+		}
 		if (!CollectionUtils.isEmpty(resultList)) {
 			String user_name = (String) resultList.get(0).get("user_name");
 			redirectAttributes.addAttribute("user_name", user_name);
@@ -167,12 +169,6 @@ public class DomeController {
 
 	}
 
-	//	@RequestMapping(path = "/calendar", method = RequestMethod.POST)
-	//	public String calendar(HttpSession session) throws IOException {
-	//		return "yoyaku";
-	//
-	//	}
-
 	//予約完了
 	@RequestMapping(path = "/yoyaku_done", method = RequestMethod.GET)
 	public String yoyaku_done(Model model, String user_name, HttpSession session) throws IOException {
@@ -212,7 +208,7 @@ public class DomeController {
 
 		List<Map<String, Object>> resultList = null;
 		resultList = jdbcTemplate.queryForList(
-				"SELECT a.reservation_id,a.date,a.court,b.user_id,b.year_class,b.user_name FROM dome_reservation a INNER JOIN dome_user b ON a.user_id = b.user_id WHERE a.versus = 1;");
+				"SELECT a.reservation_id, a.date, a.court, b.user_id, b.year_class, b.user_name FROM dome_reservation a INNER JOIN dome_user b ON a.user_id = b.user_id WHERE a.versus = 1 AND NOT EXISTS ( SELECT 1 FROM dome_versus c WHERE c.reservation_id = a.reservation_id );");
 		model.addAttribute("resultList", resultList);
 
 		// セッションからユーザーIDを取得
@@ -232,8 +228,8 @@ public class DomeController {
 		return "redirect:/yoyaku_done";
 	}
 
-	//スポーツ大会機能
-	@GetMapping("/taikai")
+	// スポーツ大会機能
+	@RequestMapping(path = "/taikai", method = RequestMethod.GET)
 	public String taikai(Model model, HttpSession session) {
 		// セッションからユーザーIDを取得
 		String username = (String) session.getAttribute("user_name");
@@ -242,8 +238,8 @@ public class DomeController {
 		// SELECT文の結果をしまうためのリスト
 		List<Map<String, Object>> resultList;
 
-		// SELECT文の実行
-		resultList = jdbcTemplate.queryForList("SELECT tournament_name FROM dome_sports");
+		// SELECT文の実行（del_flgが0の場合のみ）
+		resultList = jdbcTemplate.queryForList("SELECT * FROM dome_sports WHERE del_flg = 0");
 
 		// 実行結果をmodelにしまってHTMLで出せるようにする。
 		model.addAttribute("selectResult", resultList);
@@ -251,50 +247,31 @@ public class DomeController {
 		return "taikai";
 	}
 
-	@GetMapping("/tournament/{tournamentName}")
-	public String showTournament(@PathVariable String tournamentName, Model model) {
-		// 大会名に基づいてデータを取得するSELECT文
-		String sql = "SELECT * FROM dome_sports WHERE tournament_name = ?";
-		// 大会名に基づいてデータを取得
-		Map<String, Object> tournamentData = jdbcTemplate.queryForMap(sql, tournamentName);
+	@RequestMapping(path = "/taikai", method = RequestMethod.POST)
+	public String taikai(Model model) throws IOException {
+		// SELECT文の結果をしまうためのリスト
+		List<Map<String, Object>> resultList;
 
-		// 取得したデータをモデルに追加
-		model.addAttribute("tournamentData", tournamentData);
+		// SELECT文の実行（del_flgが0の場合のみ）
+		resultList = jdbcTemplate.queryForList("SELECT * FROM dome_sports WHERE del_flg = 0");
 
-		return "tournament";
+		// 実行結果をmodelにしまってHTMLで出せるようにする。
+		model.addAttribute("dome_sports", resultList);
+		return "taikai";
 	}
 
-	//	 @GetMapping("/taikai")
-	//	    public String taikai(Model model, HttpSession session) {
-	//	        // セッションからユーザーIDを取得
-	//	        String username = (String) session.getAttribute("user_name");
-	//	        model.addAttribute("user_name", username);
-	//
-	//	        // SELECT文の結果をしまうためのリスト
-	//	        List<Map<String, Object>> resultList;
-	//
-	//	        // SELECT文の実行
-	//	        resultList = jdbcTemplate.queryForList("SELECT * FROM dome_sports");
-	//
-	//	        // 実行結果をmodelにしまってHTMLで出せるようにする。
-	//	        model.addAttribute("selectResult", resultList);
-	//
-	//	        return "taikai";
-	//	    }
-
-	//
-	//	@RequestMapping(path = "/taikai", method = RequestMethod.POST)
-	//	public String taikai(Model model) throws IOException {
-	//	    //SELECT文の結果をしまうためのリスト
-	//	    List<Map<String, Object>> resultList;
-	//
-	//	    //SELECT文の実行
-	//	    resultList = jdbcTemplate.queryForList("select * from dome_sports");
-	//
-	//	    //実行結果をmodelにしまってHTMLで出せるようにする。
-	//	    model.addAttribute("dome_sports", resultList);
-	//	    return "taikai";
-	//	}
+//	@GetMapping("/tournament/{tournamentName}")
+//	public String showTournament(@PathVariable String tournamentName, Model model) {
+//		// 大会名に基づいてデータを取得するSELECT文
+//		String sql = "SELECT * FROM dome_sports WHERE tournament_name = ?";
+//		// 大会名に基づいてデータを取得
+//		Map<String, Object> tournamentData = jdbcTemplate.queryForMap(sql, tournamentName);
+//
+//		// 取得したデータをモデルに追加
+//		model.addAttribute("tournamentData", tournamentData);
+//
+//		return "tournament";
+//	}
 
 	//管理者ログイン画面
 	@RequestMapping(path = "/administrator", method = RequestMethod.GET)
@@ -360,9 +337,23 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/studentregistration", method = RequestMethod.POST)
-	public String studentregistration(Model model) throws IOException {
+	public String studentregistration(@RequestParam int user_id,
+			@RequestParam String year_class,
+			@RequestParam String user_name,
+			Model model) throws IOException {
 
-		return "administratorregistration";
+		// user_idが既存のユーザーに対応するものであれば更新、存在しなければ新規登録
+		int updateCount = jdbcTemplate.update(
+				"UPDATE dome_user SET year_class = ?, user_name = ? WHERE user_id = ?",
+				year_class, user_name, user_id);
+
+		if (updateCount == 0) {
+			// UPDATEが行われなかった場合（該当のuser_idが存在しない場合）は新規登録
+			jdbcTemplate.update("INSERT INTO dome_user (user_id, year_class, user_name, del_flg) VALUES (?, ?, ?, ?)",
+					user_id, year_class, user_name, 0); // 0は初期のdel_flgの値として仮定
+		}
+
+		return "redirect:/studentregistration";
 	}
 
 	//管理者管理
@@ -375,47 +366,105 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/administratorregistration", method = RequestMethod.POST)
-	public String administratorregistration(Model model) throws IOException {
+	public String administratorregistration(@RequestParam String user_name,
+			@RequestParam String password,
+			Model model) throws IOException {
 
-		return "administratorregistration";
+		// ユーザー名が既に存在するか確認
+		boolean isUserExists = checkIfUserExists(user_name);
+
+		if (isUserExists) {
+			// 既に存在する場合はエラーメッセージなどを設定し、適切な処理を行う
+			model.addAttribute("error", "その名前は既に登録されています。");
+			return "administratorregistration";
+		} else {
+			// 新規登録
+			jdbcTemplate.update("INSERT INTO dome_administrator (user_name, password, del_flg) VALUES (?, ?, ?)",
+					user_name, password, 0);
+
+			return "administratorregistration";
+		}
 	}
 
-	//予約管理
+	private boolean checkIfUserExists(String user_name) {
+		// データベースでユーザー名の重複を確認するクエリを実行
+		int count = jdbcTemplate.queryForObject(
+				"SELECT COUNT(*) FROM dome_administrator WHERE user_name = ?",
+				Integer.class, user_name);
+
+		return count > 0;
+	}
+
+	// 予約管理
 	@RequestMapping(path = "/reservationmanagement", method = RequestMethod.GET)
-	public String reservationmanagement(Model model, String user_name, HttpSession session) throws IOException {
+	public String showReservations(Model model, HttpSession session) {
 		// セッションからユーザーIDを取得
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
+
+		// 予約情報を取得
+		List<Map<String, Object>> reservations = jdbcTemplate.queryForList(
+				"SELECT * FROM dome_reservation");
+
+		model.addAttribute("selectResult", reservations);
+
 		return "reservationmanagement";
 	}
 
 	@RequestMapping(path = "/reservationmanagement", method = RequestMethod.POST)
-	public String reservationmanagement(Model model) throws IOException {
+	public String handleReservationAction(Model model, @RequestParam String action, @RequestParam int reservationId) {
+		if ("deleteReservation".equals(action)) {
+			// 予約の削除処理
+			jdbcTemplate.update("DELETE FROM dome_reservation WHERE reservation_id = ?", reservationId);
+			jdbcTemplate.update("DELETE FROM dome_calendar WHERE calendar_id = ?", reservationId);
+		}
 
-		return "reservationmanagement";
+		// 再度予約情報を取得して表示
+		List<Map<String, Object>> reservations = jdbcTemplate.queryForList(
+				"SELECT * FROM dome_reservation");
+
+		model.addAttribute("selectResult", reservations);
+
+		return "redirect:/reservationmanagement";
 	}
 
-	//スポーツ大会管理
-	@RequestMapping(path = "/sportsmanagement", method = RequestMethod.GET)
-	public String sportsmanagement(Model model, String user_name, HttpSession session) throws IOException {
-		// セッションからユーザーIDを取得
-		String username = (String) session.getAttribute("user_name");
-		model.addAttribute("user_name", username);
+		//スポーツ大会管理
+		@RequestMapping(path = "/sportsmanagement", method = RequestMethod.GET)
+		public String sportsmanagement(Model model, String user_name, HttpSession session) throws IOException {
+			// セッションからユーザーIDを取得
+			String username = (String) session.getAttribute("user_name");
+			model.addAttribute("user_name", username);
 
-		//SELECT文の結果をしまうためのリスト
-		List<Map<String, Object>> resultList;
+			//SELECT文の結果をしまうためのリスト
+			List<Map<String, Object>> resultList;
 
-		//SELECT文の実行
-		resultList = jdbcTemplate.queryForList("select * from dome_sports");
+			//SELECT文の実行
+			resultList = jdbcTemplate.queryForList("SELECT * FROM dome_sports WHERE del_flg = 0");
 
-		//実行結果をmodelにしまってHTMLで出せるようにする。
-		model.addAttribute("selectResult", resultList);
+			//実行結果をmodelにしまってHTMLで出せるようにする。
+			model.addAttribute("selectResult", resultList);
 
-		return "sportsmanagement";
-	}
+			return "sportsmanagement";
+		}
 
-	@RequestMapping(path = "/sportsmanagement", method = RequestMethod.POST)
-	public String sportsmanagement(@RequestParam("tournament_image") MultipartFile tournament_image,
+		@RequestMapping(path = "/sportsmanagementupdate", method = RequestMethod.POST)
+		public String sportsmanagementupdate(Model model,
+				@RequestParam String action,
+				@RequestParam(name = "tournamentId", required = false) Long tournamentId) {
+
+			if ("deleteTournament".equals(action) && tournamentId != null) {
+				// 削除の処理
+				jdbcTemplate.update("UPDATE dome_sports SET del_flg = 1 WHERE tournament_id = ?", tournamentId);
+			}
+
+			// 再度大会情報を取得して表示
+			List<Map<String, Object>> resultList = jdbcTemplate.queryForList("SELECT * FROM dome_sports WHERE del_flg = 0");
+			model.addAttribute("selectResult", resultList);
+
+			return "redirect:/sportsmanagement";
+		}
+	@RequestMapping(path = "/sportsmanagementinsert", method = RequestMethod.POST)
+	public String sportsmanagementinsert(@RequestParam("tournament_image") MultipartFile tournament_image,
 			@RequestParam("tournament_name") String tournament_name,
 			Model model) throws IOException {
 
