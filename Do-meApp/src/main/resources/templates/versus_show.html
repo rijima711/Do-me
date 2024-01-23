@@ -2,9 +2,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>管理画面</title>
+<title>対戦表</title>
 <style>
-h1, button {
+h1 {
 	margin: 0;
 	padding: 0;
 }
@@ -41,14 +41,25 @@ hr {
 	text-align: center;
 }
 
-input {
-	margin: 30px;
-	font-size: 30px;
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+}
+
+th {
+	background-color: #f2f2f2;
 }
 </style>
 </head>
 <body>
-	<h1>KRCドーム管理画面</h1>
+	<h1>KRCドーム</h1>
+
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>
@@ -68,25 +79,35 @@ input {
 					window.location.href = "/logout";
 				});
 	</script>
-	<img id="versus-button" th:src="@{/image/versusbutton.png}"
-		alt="メールボックスボタン" height="100px" />
-	<script>
-		document.getElementById("versus-button").addEventListener("click",
-				function() {
-					window.location.href = "/versus_show";
-				});
-	</script>
+	<!-- <img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px">
+ -->
 	<hr>
 	<button type="button" onclick="history.back()">前のページへ戻る</button>
-	<div id="menu">
-		<form th:action="@{/management}" method="POST">
-			<input type="submit" value="ユーザー管理" name="studentregistration">
-			<br> <input type="submit" value="管理者管理"
-				name="administratorregistration"> <br> <input
-				type="submit" value="予約管理" name="reservationmanagement"> <br>
-			<input type="submit" value="スポーツ大会管理" name="sportsmanagement">
-			<br>
-		</form>
-	</div>
+
+	<h2>対戦が決まっている組み合わせ</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>日付</th>
+				<th>コート</th>
+				<th>対戦クラス①</th>
+				<th>対戦クラス②</th>
+
+
+			</tr>
+		</thead>
+		<tbody>
+			<th:block th:each="versus_show : ${resultList}">
+				<tr>
+					<td th:text="${versus_show.date}"></td>
+					<td th:text="${versus_show.court}"></td>
+					<td th:text="${versus_show.year_class}"></td>
+					<td th:text="${versus_show.versus_class}"></td>
+
+				</tr>
+			</th:block>
+		</tbody>
+	</table>
+
 </body>
 </html>

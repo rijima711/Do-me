@@ -97,6 +97,14 @@ hr {
 					window.location.href = "/logout";
 				});
 	</script>
+	<img id="versus-button" th:src="@{/image/versusbutton.png}"
+		alt="メールボックスボタン" height="100px" />
+	<script>
+		document.getElementById("versus-button").addEventListener("click",
+				function() {
+					window.location.href = "/versus_show";
+				});
+	</script>
 	<hr>
 	<button type="button" onclick="history.back()">前のページへ戻る</button>
 	<form th:action="@{/studentregistration}" method="POST">

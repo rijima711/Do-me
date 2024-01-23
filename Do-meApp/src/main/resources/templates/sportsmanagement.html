@@ -143,8 +143,14 @@ input[type="submit"]:hover {
 					window.location.href = "/logout";
 				});
 	</script>
-	<img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px" />
-
+	<img id="versus-button" th:src="@{/image/versusbutton.png}"
+		alt="メールボックスボタン" height="100px" />
+	<script>
+		document.getElementById("versus-button").addEventListener("click",
+				function() {
+					window.location.href = "/versus_show";
+				});
+	</script>
 	<hr>
 	<button type="button" onclick="history.back()">前のページへ戻る</button>
 	<h1>スポーツ大会管理</h1>
