@@ -1,13 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 
-<title>ログインページ</title>
-<script src="/js/slogin.js/"></script>
+<title>スポーツ大会ページ</title>
 <style>
+h1 {
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	font-size: 100px;
+	float: left;
+}
+
+#login {
+	padding: 10px;
+	margin: 0;
+	text-align: center;
+	float: right;
+	border-radius: 15px;
+	background: linear-gradient(45deg, #ff69b4, #e066ff);
+	color: #f5f5f5;
+	font-size: 75%;
+}
+
+#login p {
+	margin: 0;
+}
+
+img {
+	float: right;
+}
+
+hr {
+	clear: both;
+}
+
+button {
+	float: left;
+}
+
 body {
 	font-family: 'Arial', sans-serif;
 	background-color: #f4f4f4;
@@ -16,50 +52,33 @@ body {
 	padding: 0;
 }
 
-h1 {
-	color: #333;
-}
-
-form {
-	max-width: 300px;
+table {
+	width: 80%;
 	margin: 20px auto;
-	padding: 20px;
-	background-color: #fff;
-	border-radius: 8px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-collapse: collapse;
 }
 
-label {
-	display: block;
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
 	text-align: left;
-	margin: 10px 0;
-	color: #555;
 }
 
-input {
-	width: 100%;
-	padding: 10px;
-	margin-bottom: 15px;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 4px;
+th {
+	background-color: #40e0d0;
+	color: white;
 }
 
-input[type="submit"] {
-	background-color: #ff84c1;
-	color: #fff;
-	cursor: pointer;
-}
-
-input[type="submit"]:hover {
-	background-color: #ffb6c1;
+img {
+	width: 100px;
+	height: 100px;
 }
 
 @media screen and (max-width: 480px) {
 	h1 {
 		font-size: 2em;
 		color: red;
-		text-align: center;
+		float: left;
 	}
 	#login {
 		padding: 10px;
@@ -92,13 +111,53 @@ input[type="submit"]:hover {
 </head>
 
 <body>
-	<h1>LOGIN PAGE</h1>
-	<form th:action="@{/slogin}" method="POST">
-		<label>学籍番号</label> <input type="number" name="user_id" id="user_id">
-		<input type="submit" value="ログイン"> <input type="submit"
-			value="管理者画面" name="administrator">
-	</form>
-	<div id="menu"></div>
-</body>
+	<h1>KRCドーム</h1>
+	<div id="login">
+		<p>
+			<span th:text="${user_name}"></span>
+		</p>
+		<p>
+			<span th:if="${user_name == null}" th:text="'User Name is null'"></span>
+		</p>
+		<p>ログイン中</p>
+	</div>
 
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
+		alt="ログアウトボタン" height="100px" />
+	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
+	<script>
+		document.getElementById("logout-button").addEventListener("click",
+				function() {
+					window.location.href = "/logout";
+				});
+	</script>
+	<img id="versus-button" th:src="@{/image/versusbutton.png}"
+		alt="メールボックスボタン" height="100px" />
+	<script>
+		document.getElementById("versus-button").addEventListener("click",
+				function() {
+					window.location.href = "/versus_show";
+				});
+	</script>
+	<hr>
+	<button type="button" onclick="history.back()">前のページへ戻る</button>
+	<h2>スポーツ大会ページ</h2>
+	<table>
+		<tr>
+			<th>大会ID</th>
+			<th>大会名</th>
+			<th>大会画像</th>
+			<th>登録日</th>
+		</tr>
+		<!-- ここで選択された大会名に基づいて詳細な情報を表示 -->
+		<tr th:each="tournament : ${selectResult}">
+			<td th:text="${tournament.tournament_id}"></td>
+			<td th:text="${tournament.tournament_name}"></td>
+			<td><img
+				th:src="'data:image/jpeg;base64,' + ${tournament.tournament_image}"
+				alt="Tournament Image" /></td>
+			<td th:text="${tournament.tournament_data}"></td>
+		</tr>
+	</table>
+</body>
 </html>
