@@ -1,52 +1,76 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>管理画面</title>
-<style>
-h1, button {
-	margin: 0;
-	padding: 0;
-}
+	<meta charset="UTF-8">
+	<title>管理画面</title>
+	<style>
+		h1,
+		button {
+			margin: 0;
+			padding: 0;
+		}
 
-h1 {
-	font-size: 100px;
-	float: left;
-}
+		body {
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
 
-#login {
-	padding: 10px;
-	margin: 0; /* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
-	text-align: center;
-	float: right;
-	border-radius: 15px;
-	background: linear-gradient(45deg, #ff69b4, #e066ff);
-	color: #f5f5f5;
-	font-size: 75%;
-}
+		h1 {
+			font-size: 100px;
+			float: left;
+		}
 
-#login p {
-	margin: 0; /* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
-}
+		#login {
+			padding: 10px;
+			margin: 0;
+			/* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
+			text-align: center;
+			float: right;
+			border-radius: 15px;
+			background: linear-gradient(45deg, #ff69b4, #e066ff);
+			color: #f5f5f5;
+			font-size: 75%;
+		}
 
-img {
-	float: right;
-}
+		#login p {
+			margin: 0;
+			/* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
+		}
 
-hr {
-	clear: both;
-}
+		img {
+			float: right;
+		}
 
-#menu {
-	text-align: center;
-}
+		hr {
+			clear: both;
+		}
 
-input {
-	margin: 30px;
-	font-size: 30px;
-}
-</style>
+		#menu {
+			text-align: center;
+		}
+
+		input {
+			margin: 15px;
+			font-size: 20px;
+			width: 60%;
+			height: 50px;
+			padding: 15px;
+			background-color: #3498db;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		input:hover {
+			background-color: #2980b9;
+		}
+	</style>
 </head>
+
 <body>
 	<h1>KRCドーム管理画面</h1>
 	<div id="login">
@@ -59,34 +83,31 @@ input {
 		<p>ログイン中</p>
 	</div>
 
-	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
-		alt="ログアウトボタン" height="100px" />
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}" alt="ログアウトボタン" height="100px" />
 	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
 	<script>
 		document.getElementById("logout-button").addEventListener("click",
-				function() {
-					window.location.href = "/logout";
-				});
+			function () {
+				window.location.href = "/logout";
+			});
 	</script>
-	<img id="versus-button" th:src="@{/image/versusbutton.png}"
-		alt="メールボックスボタン" height="100px" />
+	<img id="versus-button" th:src="@{/image/versusbutton.png}" alt="メールボックスボタン" height="100px" />
 	<script>
 		document.getElementById("versus-button").addEventListener("click",
-				function() {
-					window.location.href = "/versus_show";
-				});
+			function () {
+				window.location.href = "/versus_show";
+			});
 	</script>
 	<hr>
-	<button type="button" onclick="history.back()">前のページへ戻る</button>
 	<div id="menu">
 		<form th:action="@{/management}" method="POST">
 			<input type="submit" value="ユーザー管理" name="studentregistration">
-			<br> <input type="submit" value="管理者管理"
-				name="administratorregistration"> <br> <input
-				type="submit" value="予約管理" name="reservationmanagement"> <br>
+			<br> <input type="submit" value="管理者管理" name="administratorregistration"> <br> <input type="submit"
+				value="予約管理" name="reservationmanagement"> <br>
 			<input type="submit" value="スポーツ大会管理" name="sportsmanagement">
 			<br>
 		</form>
 	</div>
 </body>
+
 </html>

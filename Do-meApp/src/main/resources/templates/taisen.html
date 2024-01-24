@@ -1,100 +1,150 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<title>対戦予約</title>
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
 
-<title>対戦予約</title>
-<style>
-h1 {
-	margin: 0;
-	padding: 0;
-}
+		h1,
+		button {
+			margin: 0;
+			padding: 0;
+		}
 
-h1 {
-	font-size: 100px;
-	float: left;
-}
+		h1 {
+			font-size: 100px;
+			float: left;
+			color: #333;
+		}
 
-#login {
-	padding: 10px;
-	margin: 0; /* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
-	text-align: center;
-	float: right;
-	border-radius: 15px;
-	background: linear-gradient(45deg, #ff69b4, #e066ff);
-	color: #f5f5f5;
-	font-size: 75%;
-}
+		#login {
+			padding: 10px;
+			margin: 0;
+			text-align: center;
+			float: right;
+			border-radius: 15px;
+			background: linear-gradient(45deg, #ff69b4, #e066ff);
+			color: #f5f5f5;
+			font-size: 75%;
+		}
 
-#login p {
-	margin: 0; /* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
-}
+		#login p {
+			margin: 0;
+		}
 
-img {
-	float: right;
-}
+		img {
+			float: right;
+		}
 
-hr {
-	clear: both;
-}
+		hr {
+			clear: both;
+			border: 0;
+			border-top: 1px solid #ccc;
+		}
 
-#menu {
-	text-align: center;
-}
+		button {
+			margin: 15px;
+			padding: 10px;
+			font-size: 20px;
+			background-color: #3498db;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			float: left;
+		}
 
-table {
-	border-collapse: collapse;
-	width: 100%;
-}
+		button:hover {
+			background-color: #2980b9;
+		}
 
-th, td {
-	border: 1px solid #dddddd;
-	text-align: left;
-	padding: 8px;
-}
+		table {
+			clear: both;
+			width: 80%;
+			margin: 20px auto;
+			border-collapse: collapse;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
 
-th {
-	background-color: #f2f2f2;
-}
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
 
-@media screen and (max-width: 480px) {
-	h1 {
-		font-size: 2em;
-		color: red;
-		float: left;
-	}
-	#login {
-		padding: 10px;
-		margin: 0;
-		text-align: center;
-		float: right;
-		border-radius: 15px;
-		background: linear-gradient(45deg, #ff69b4, #e066ff);
-		color: #f5f5f5;
-		font-size: 75%;
-		max-width: 60px;
-		width: 100%;
-	}
-	img {
-		max-width: 50px;
-		width: auto;
-		max-height: 60px;
-		height: auto;
-	}
-	input {
-		margin: 15px;
-		font-size: 20px;
-		text-align: center;
-		max-width: 100%;
-		width: 80%;
-		padding: 10px 20px;
-	}
-}
-</style>
+		th {
+			background-color: #4caf50;
+			color: white;
+		}
 
+		form {
+			display: inline-block;
+			/* フォームを横に並べる */
+		}
+
+		input[type="submit"] {
+			background-color: #27ae60;
+			color: #fff;
+			padding: 8px 12px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #218c56;
+		}
+
+		@media screen and (max-width: 480px) {
+			h1 {
+				font-size: 2em;
+				color: red;
+				float: left;
+			}
+
+			#login {
+				padding: 10px;
+				margin: 0;
+				text-align: center;
+				float: right;
+				border-radius: 15px;
+				background: linear-gradient(45deg, #ff69b4, #e066ff);
+				color: #f5f5f5;
+				font-size: 75%;
+				max-width: 60px;
+				width: 100%;
+			}
+
+			img {
+				max-width: 50px;
+				width: auto;
+				max-height: 60px;
+				height: auto;
+			}
+
+			input {
+				margin: 15px;
+				font-size: 20px;
+				text-align: center;
+				max-width: 100%;
+				width: 80%;
+				padding: 10px 20px;
+			}
+		}
+	</style>
 </head>
+
 <body>
 	<h1>KRCドーム</h1>
 
@@ -108,25 +158,26 @@ th {
 		<p>ログイン中</p>
 	</div>
 
-	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
-		alt="ログアウトボタン" height="100px" />
-	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}" alt="ログアウトボタン" height="100px" />
 	<script>
 		document.getElementById("logout-button").addEventListener("click",
-				function() {
-					window.location.href = "/logout";
-				});
+			function () {
+				window.location.href = "/logout";
+			});
 	</script>
-	<img id="versus-button" th:src="@{/image/versusbutton.png}"
-		alt="メールボックスボタン" height="100px" />
+
+	<img id="versus-button" th:src="@{/image/versusbutton.png}" alt="メールボックスボタン" height="100px" />
 	<script>
 		document.getElementById("versus-button").addEventListener("click",
-				function() {
-					window.location.href = "/versus_show";
-				});
+			function () {
+				window.location.href = "/versus_show";
+			});
 	</script>
+
 	<hr>
+
 	<button type="button" onclick="history.back()">前のページへ戻る</button>
+
 	<table>
 		<thead>
 			<tr>
@@ -146,15 +197,14 @@ th {
 					<td th:text="${taisen.court}"></td>
 					<td>
 						<form th:action="@{/taisen}" method="POST">
-							<input type="hidden" th:value="${taisen.reservation_id}"
-								name="reservationId"> <input type="submit" value="申し込む"
-								name="taisenyoyaku">
+							<input type="hidden" th:value="${taisen.reservation_id}" name="reservationId"> <input
+								type="submit" value="申し込む" name="taisenyoyaku">
 						</form>
 					</td>
 				</tr>
 			</th:block>
 		</tbody>
 	</table>
-
 </body>
+
 </html>

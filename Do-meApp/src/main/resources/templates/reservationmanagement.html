@@ -1,82 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>予約管理</title>
-<style>
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #f4f4f4;
-	text-align: center;
-	margin: 0;
-	padding: 0;
-}
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>予約管理</title>
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			background-color: #f4f4f4;
+			text-align: center;
+			margin: 0;
+			padding: 0;
+		}
 
-h1, button {
-	margin: 0;
-	padding: 0;
-}
+		h1,
+		button {
+			margin: 0;
+			padding: 0;
+		}
 
-h1 {
-	font-size: 100px;
-	float: left;
-}
+		h1 {
+			font-size: 100px;
+			float: left;
+		}
 
-#login {
-	padding: 10px;
-	margin: 0; /* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
-	text-align: center;
-	float: right;
-	border-radius: 15px;
-	background: linear-gradient(45deg, #ff69b4, #e066ff);
-	color: #f5f5f5;
-	font-size: 75%;
-}
+		#login {
+			padding: 10px;
+			margin: 0;
+			/* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
+			text-align: center;
+			float: right;
+			border-radius: 15px;
+			background: linear-gradient(45deg, #ff69b4, #e066ff);
+			color: #f5f5f5;
+			font-size: 75%;
+		}
 
-#login p {
-	margin: 0; /* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
-}
+		#login p {
+			margin: 0;
+			/* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
+		}
 
-img {
-	float: right;
-}
+		img {
+			float: right;
+		}
 
-hr {
-	clear: both;
-}
+		hr {
+			clear: both;
+		}
 
-table {
-	width: 80%;
-	margin: 20px auto;
-	border-collapse: collapse;
-	background-color: #fff;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
 
-th, td {
-	border: 1px solid #ddd;
-	padding: 8px;
-	text-align: left;
-}
+		table {
+			width: 80%;
+			margin: 20px auto;
+			border-collapse: collapse;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
 
-th {
-	background-color: #4caf50;
-	color: white;
-}
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
 
-form {
-	margin-top: 20px;
-}
+		th {
+			background-color: #4caf50;
+			color: white;
+		}
 
-input[type="submit"] {
-	background-color: #f44336;
-	color: white;
-	padding: 8px 12px;
-	cursor: pointer;
-}
-</style>
+		#form form {
+			max-width: 300px;
+			margin: 20px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		#form input {
+			width: 100%;
+			padding: 10px;
+
+			box-sizing: border-box;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		#form input[type="submit"] {
+			background-color: #f44336;
+			color: #fff;
+			cursor: pointer;
+		}
+
+		#form input[type="submit"]:hover {
+			background-color: #d32f2f;
+		}
+
+		#adminmain input {
+			margin: 15px;
+			padding: 10px;
+			font-size: 20px;
+			background-color: #3498db;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			float: left;
+		}
+
+		#adminmain input[type="submit"]:hover {
+			background-color: #2980b9;
+		}
+	</style>
 </head>
+
 <body>
 	<h1>KRCドーム</h1>
 	<div id="login">
@@ -89,26 +129,27 @@ input[type="submit"] {
 		<p>ログイン中</p>
 	</div>
 
-	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
-		alt="ログアウトボタン" height="100px" />
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}" alt="ログアウトボタン" height="100px" />
 	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
 	<script>
 		document.getElementById("logout-button").addEventListener("click",
-				function() {
-					window.location.href = "/logout";
-				});
+			function () {
+				window.location.href = "/logout";
+			});
 	</script>
-	<img id="versus-button" th:src="@{/image/versusbutton.png}"
-		alt="メールボックスボタン" height="100px" />
+	<img id="versus-button" th:src="@{/image/versusbutton.png}" alt="メールボックスボタン" height="100px" />
 	<script>
 		document.getElementById("versus-button").addEventListener("click",
-				function() {
-					window.location.href = "/versus_show";
-				});
+			function () {
+				window.location.href = "/versus_show";
+			});
 	</script>
 	<hr>
-	<button type="button" onclick="history.back()">前のページへ戻る</button>
-
+	<div id="adminmain">
+		<form th:action="@{/adminmain}" method="POST">
+			<input type="submit" value="ホームへ戻る" naem="adminmain">
+		</form>
+	</div>
 	<h2>予約管理</h2>
 
 	<!-- 予約一覧を表示するテーブル -->
@@ -132,15 +173,17 @@ input[type="submit"] {
 				<td th:text="${reservation.versus}"></td>
 				<td th:text="${reservation.user_id}"></td>
 				<td>
-					<form th:action="@{/reservationmanagement}" method="POST">
-						<input type="hidden" name="action" value="deleteReservation">
-						<input type="hidden" name="reservationId"
-							th:value="${reservation.reservation_id}"> <input
-							type="submit" value="削除">
-					</form>
+					<div id="form">
+						<form th:action="@{/reservationmanagement}" method="POST">
+							<input type="hidden" name="action" value="deleteReservation">
+							<input type="hidden" name="reservationId" th:value="${reservation.reservation_id}"> <input
+								type="submit" value="削除">
+						</form>
+					</div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 </body>
+
 </html>

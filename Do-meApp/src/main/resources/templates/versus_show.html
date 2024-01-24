@@ -1,62 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<title>対戦表</title>
-<style>
-h1 {
-	margin: 0;
-	padding: 0;
-}
+	<meta charset="UTF-8">
+	<title>対戦表</title>
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
 
-h1 {
-	font-size: 100px;
-	float: left;
-}
+		h1,
+		h2,
+		button {
+			margin: 0;
+			padding: 0;
+		}
 
-#login {
-	padding: 10px;
-	margin: 0; /* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
-	text-align: center;
-	float: right;
-	border-radius: 15px;
-	background: linear-gradient(45deg, #ff69b4, #e066ff);
-	color: #f5f5f5;
-	font-size: 75%;
-}
+		h1 {
+			font-size: 100px;
+			float: left;
+			color: #333;
+		}
 
-#login p {
-	margin: 0; /* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
-}
+		#login {
+			padding: 10px;
+			margin: 0;
+			text-align: center;
+			float: right;
+			border-radius: 15px;
+			background: linear-gradient(45deg, #ff69b4, #e066ff);
+			color: #f5f5f5;
+			font-size: 75%;
+		}
 
-img {
-	float: right;
-}
+		#login p {
+			margin: 0;
+		}
 
-hr {
-	clear: both;
-}
+		img {
+			float: right;
+		}
 
-#menu {
-	text-align: center;
-}
+		hr {
+			clear: both;
+			border: 0;
+			border-top: 1px solid #ccc;
+		}
 
-table {
-	border-collapse: collapse;
-	width: 100%;
-}
+		button {
+			margin: 15px;
+			padding: 10px;
+			font-size: 20px;
+			background-color: #3498db;
+			color: #fff;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			float: left;
+		}
 
-th, td {
-	border: 1px solid #dddddd;
-	text-align: left;
-	padding: 8px;
-}
+		button:hover {
+			background-color: #2980b9;
+		}
 
-th {
-	background-color: #f2f2f2;
-}
-</style>
+		h2 {
+
+			font-size: 36px;
+			color: #333;
+			margin-top: 20px;
+		}
+
+		table {
+			clear: both;
+			width: 80%;
+			margin: 20px auto;
+			border-collapse: collapse;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #4caf50;
+			color: white;
+		}
+	</style>
 </head>
+
 <body>
 	<h1>KRCドーム</h1>
 
@@ -70,18 +109,16 @@ th {
 		<p>ログイン中</p>
 	</div>
 
-	<img id="logout-button" th:src="@{/image/logoutbutton.png}"
-		alt="ログアウトボタン" height="100px" />
-	<!-- 画像をクリックしたときに/logoutにリダイレクトするJavaScript -->
+	<img id="logout-button" th:src="@{/image/logoutbutton.png}" alt="ログアウトボタン" height="100px" />
 	<script>
 		document.getElementById("logout-button").addEventListener("click",
-				function() {
-					window.location.href = "/logout";
-				});
+			function () {
+				window.location.href = "/logout";
+			});
 	</script>
-	<!-- <img th:src="@{/image/mailbox.png}" alt="メールボックスボタン" height="100px">
- -->
+
 	<hr>
+
 	<button type="button" onclick="history.back()">前のページへ戻る</button>
 
 	<h2>対戦が決まっている組み合わせ</h2>
@@ -92,8 +129,6 @@ th {
 				<th>コート</th>
 				<th>対戦クラス①</th>
 				<th>対戦クラス②</th>
-
-
 			</tr>
 		</thead>
 		<tbody>
@@ -103,11 +138,10 @@ th {
 					<td th:text="${versus_show.court}"></td>
 					<td th:text="${versus_show.year_class}"></td>
 					<td th:text="${versus_show.versus_class}"></td>
-
 				</tr>
 			</th:block>
 		</tbody>
 	</table>
-
 </body>
+
 </html>

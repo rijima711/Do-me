@@ -100,10 +100,9 @@ public class DomeController {
 		return "versus_show";
 	}
 
-	//メインメニュー
 	@RequestMapping(path = "/mainmenu", method = RequestMethod.GET)
 	public String mainmenu(Model model, HttpSession session) throws IOException {
-		// セッションからユーザーIDを取得
+		// セッションからユーザー情報を取得
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
 
@@ -304,12 +303,13 @@ public class DomeController {
 		return "redirect:/administrator";
 	}
 
-	//管理者ホーム
 	@RequestMapping(path = "/management", method = RequestMethod.GET)
-	public String management(Model model, String user_name, HttpSession session) throws IOException {
-		// セッションからユーザーIDを取得
+	public String management(Model model, HttpSession session) throws IOException {
+		// セッションからユーザー情報を取得
 		String username = (String) session.getAttribute("user_name");
 		model.addAttribute("user_name", username);
+
+		// ユーザー情報が不足している場合にログイン画面にリダイレクトするロジックを追加することも検討してください
 
 		return "management";
 	}
@@ -330,6 +330,13 @@ public class DomeController {
 
 		return "management";
 
+	}
+
+	//管理者メインメニューへ
+	@RequestMapping(path = "/adminmain", method = RequestMethod.POST)
+	public String adminmain(Model model, String user_name, HttpSession session) throws IOException {
+
+		return "redirect:/management";
 	}
 
 	//ユーザー管理
@@ -488,5 +495,4 @@ public class DomeController {
 
 		return "redirect:/sportsmanagement";
 	}
-
 }
