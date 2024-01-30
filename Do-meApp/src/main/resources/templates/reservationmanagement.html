@@ -3,6 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>予約管理</title>
 	<style>
@@ -23,6 +26,11 @@
 		h1 {
 			font-size: 100px;
 			float: left;
+		}
+
+		#home {
+			float: left;
+			max-height: 100px;
 		}
 
 		#login {
@@ -69,6 +77,7 @@
 		th {
 			background-color: #4caf50;
 			color: white;
+			text-align: center;
 		}
 
 		#form form {
@@ -114,11 +123,75 @@
 		#adminmain input[type="submit"]:hover {
 			background-color: #2980b9;
 		}
+
+		@media screen and (max-width: 480px) {
+			h1 {
+				font-size: 2em;
+				color: red;
+				float: left;
+			}
+
+			#login {
+				padding: 10px;
+				margin: 0;
+				text-align: center;
+				float: right;
+				border-radius: 15px;
+				background: linear-gradient(45deg, #ff69b4, #e066ff);
+				color: #f5f5f5;
+				font-size: 75%;
+				max-width: 60px;
+				width: 100%;
+			}
+
+			img {
+				max-width: 50px;
+				width: auto;
+				max-height: 60px;
+				height: auto;
+			}
+
+			h2 {
+				font-size: 24px;
+				text-align: center;
+				clear: both;
+			}
+
+			#form input {
+				margin: 15px;
+				font-size: 20px;
+				text-align: center;
+				max-width: 100%;
+				width: 80%;
+				padding: 10px 20px;
+			}
+
+			#form form {
+				margin: 0;
+				padding: 0;
+				box-shadow: none;
+			}
+
+			#form input {
+				margin: 15px;
+				font-size: 20px;
+				text-align: center;
+				max-width: 100%;
+				width: 80%;
+				padding: 10px 20px;
+			}
+		}
 	</style>
 </head>
 
 <body>
-	<h1>KRCドーム</h1>
+	<img id="home" th:src="@{/image/DomeHome.png}" alt="ホームアイコン">
+	<script>
+		document.getElementById("home").addEventListener("click",
+			function () {
+				window.location.href = "/management";
+			});
+	</script>
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>

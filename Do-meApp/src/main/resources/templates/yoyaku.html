@@ -22,6 +22,11 @@
 			color: #333;
 		}
 
+		#home {
+			float: left;
+			max-height: 100px;
+		}
+
 		#login {
 			padding: 10px;
 			margin: 0;
@@ -133,7 +138,13 @@
 </head>
 
 <body>
-	<h1>KRCドーム</h1>
+	<img id="home" th:src="@{/image/DomeHome.png}" alt="ホームアイコン">
+	<script>
+		document.getElementById("home").addEventListener("click",
+			function () {
+				window.location.href = "/mainmenu";
+			});
+	</script>
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>
@@ -161,6 +172,13 @@
 	</script>
 
 	<hr>
+	<!--
+	<div id="adminmain">
+		<form th:action="@{/yoyaku_done}" method="POST">
+			<input type="submit" value="ホームへ戻る" naem="adminmain">
+		</form>
+	</div>
+	 -->
 	<button type="button" onclick="history.back()">前のページへ戻る</button>
 
 	<form th:action="@{/yoyaku}" method="POST">
@@ -178,6 +196,10 @@
 			コートA・・・バレーボール<br>コートB・・・フットサル、バスケットボール<br>※水曜日は部活のため使用不可
 		</p>
 	</div>
+	<!-- エラーメッセージがあれば表示する -->
+	<script th:if="${errorMessage}">
+		alert("予約が重複しています。");
+	</script>
 </body>
 
 </html>
