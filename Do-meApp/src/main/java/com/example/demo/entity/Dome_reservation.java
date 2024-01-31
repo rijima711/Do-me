@@ -34,9 +34,6 @@ public class Dome_reservation {
 	@Column(name = "user_id")
 	private int user_id;
 
-	@Column(name = "del_flg")
-	private int del_flg;
-
 	//	@OneToOne
 	//	@JoinColumn(name = "user_id")
 	//	private Dome_user Dome_user;
