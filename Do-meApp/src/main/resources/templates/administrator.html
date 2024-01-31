@@ -3,6 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
 	<title>管理者ログインページ</title>
 	<style>
 		body {
@@ -15,6 +18,10 @@
 
 		h1 {
 			color: #333;
+		}
+
+		.sp_br {
+			display: none;
 		}
 
 		form {
@@ -53,11 +60,53 @@
 		input[type="submit"]:hover {
 			background-color: #2980b9;
 		}
+
+		@media screen and (max-width: 480px) {
+			h1 {
+				font-size: 2em;
+				color: red;
+				text-align: center;
+			}
+
+			.sp_br {
+				display: block;
+			}
+
+			#login {
+				padding: 10px;
+				margin: 0;
+				text-align: center;
+				float: right;
+				border-radius: 15px;
+				background: linear-gradient(45deg, #ff69b4, #e066ff);
+				color: #f5f5f5;
+				font-size: 75%;
+				max-width: 60px;
+				width: 100%;
+			}
+
+			img {
+				max-width: 50px;
+				width: auto;
+				max-height: 60px;
+				height: auto;
+			}
+
+			input {
+				margin: 15px;
+				font-size: 20px;
+				text-align: center;
+				max-width: 100%;
+				width: 80%;
+				padding: 10px 20px;
+			}
+
+		}
 	</style>
 </head>
 
 <body>
-	<h1>MANAGEMENT LOGIN PAGE</h1>
+	<h1>MANAGEMENT<br class="sp_br"> LOGIN PAGE</h1>
 	<form th:action="@{/administrator}" method="POST">
 		<label>管理者ID</label> <input type="text" name="user_id" id="user_id">
 		<label>パスワード</label> <input type="password" name="password" id="password"> <input type="submit"

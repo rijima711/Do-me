@@ -14,6 +14,11 @@
 			background-color: #f4f4f4;
 		}
 
+		#home {
+			float: left;
+			max-height: 100px;
+		}
+
 		h1,
 		button {
 			margin: 0;
@@ -111,7 +116,8 @@
 </head>
 
 <body>
-	<h1>KRCドーム</h1>
+	<img id="home" th:src="@{/image/DomeHome.png}" alt="ホームアイコン">
+	
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>

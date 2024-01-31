@@ -27,6 +27,11 @@
 			color: #333;
 		}
 
+		#home {
+			float: left;
+			max-height: 100px;
+		}
+
 		#login {
 			padding: 10px;
 			margin: 0;
@@ -113,7 +118,15 @@
 </head>
 
 <body>
-	<h1>KRCドーム</h1>
+
+	<img id="home" th:src="@{/image/DomeHome.png}" alt="ホームアイコン">
+	<script>
+		document.getElementById("home").addEventListener("click",
+			function () {
+				window.location.href = "/mainmenu";
+			});
+	</script>
+
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>

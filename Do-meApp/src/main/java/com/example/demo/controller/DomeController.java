@@ -69,6 +69,8 @@ public class DomeController {
 
 			return "redirect:/mainmenu";
 		} else {
+			// 学籍番号が存在しない場合にアラートメッセージを表示
+			redirectAttributes.addFlashAttribute("errorMessage", "学籍番号が正しくありません");
 			return "redirect:/slogin";
 		}
 	}
@@ -135,7 +137,8 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/yoyaku", method = RequestMethod.POST)
-	public String yoyaku(String court, String date, String versus, HttpSession session)
+	public String yoyaku(String court, String date, String versus, HttpSession session,
+			RedirectAttributes redirectAttributes)
 			throws IOException {
 		String year_class = (String) session.getAttribute("year_class");
 		String title = year_class + "・" + court + "コート";
@@ -146,7 +149,9 @@ public class DomeController {
 		// 重複チェック
 		List<Dome_reservation> reservationCheck = dome_reservationRepository.findByDateAndCourt(date, court);
 		if (!reservationCheck.isEmpty()) {
-			return "redirect:/yoyaku_error"; // 重複がある場合の処理
+			redirectAttributes.addFlashAttribute("errorMessage", "予約が重複しています。");
+
+			return "redirect:/yoyaku"; // 重複がある場合の処理
 		}
 
 		//予約テーブルに保存

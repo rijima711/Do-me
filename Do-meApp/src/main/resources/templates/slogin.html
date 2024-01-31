@@ -91,6 +91,7 @@
 				width: 80%;
 				padding: 10px 20px;
 			}
+
 		}
 	</style>
 </head>
@@ -102,6 +103,10 @@
 		<input type="submit" value="ログイン"> <input type="submit" value="管理者画面" name="administrator">
 	</form>
 	<div id="menu"></div>
+	<!-- エラーメッセージがあれば表示する -->
+	<script th:if="${errorMessage}">
+		alert("学籍番号が正しくありません");
+	</script>
 </body>
 
 </html>

@@ -3,6 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
 	<title>スポーツ大会管理</title>
 	<style>
 		body {
@@ -53,6 +56,11 @@
 			color: #333;
 		}
 
+		#home {
+			float: left;
+			max-height: 100px;
+		}
+
 		table {
 			width: 80%;
 			margin: 20px auto;
@@ -95,9 +103,43 @@
 			float: left;
 		}
 
+		h2 {
+			text-align: center;
+			clear: both;
+		}
+
 		#menu {
 			text-align: center;
 		}
+
+		#insert {
+			max-width: 300px;
+			margin: 20px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		#insert input {
+			width: 100%;
+			padding: 10px;
+
+			box-sizing: border-box;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		#insert input[type="submit"] {
+			background-color: #f44336;
+			color: #fff;
+			cursor: pointer;
+		}
+
+		#insert input[type="submit"]:hover {
+			background-color: #d32f2f;
+		}
+
 
 		#form form {
 			max-width: 300px;
@@ -113,6 +155,10 @@
 			text-align: left;
 			margin: 10px 0;
 			color: #555;
+		}
+
+		th {
+			text-align: center;
 		}
 
 		#form input {
@@ -149,11 +195,68 @@
 		#adminmain input[type="submit"]:hover {
 			background-color: #2980b9;
 		}
+
+		@media screen and (max-width: 480px) {
+			h1 {
+				font-size: 2em;
+				color: red;
+				float: left;
+			}
+
+			#login {
+				padding: 10px;
+				margin: 0;
+				text-align: center;
+				float: right;
+				border-radius: 15px;
+				background: linear-gradient(45deg, #ff69b4, #e066ff);
+				color: #f5f5f5;
+				font-size: 75%;
+				max-width: 60px;
+				width: 100%;
+			}
+
+			img {
+				max-width: 50px;
+				width: auto;
+				max-height: 60px;
+				height: auto;
+			}
+
+			h2 {
+				font-size: 24px;
+				text-align: center;
+				clear: both;
+			}
+
+			#form form {
+				margin: 0;
+				padding: 0;
+				box-shadow: none;
+			}
+
+			#form input {
+				margin: 15px;
+				font-size: 20px;
+				text-align: center;
+				max-width: 100%;
+				width: 80%;
+				padding: 10px 20px;
+
+			}
+
+		}
 	</style>
 </head>
 
 <body>
-	<h1>KRCドーム</h1>
+	<img id="home" th:src="@{/image/DomeHome.png}" alt="ホームアイコン">
+	<script>
+		document.getElementById("home").addEventListener("click",
+			function () {
+				window.location.href = "/management";
+			});
+	</script>
 	<div id="login">
 		<p>
 			<span th:text="${user_name}"></span>
@@ -186,6 +289,18 @@
 	</div>
 	<h2>スポーツ大会管理</h2>
 
+	<!-- 新規大会データ登録 -->
+	<h2>新規大会データ登録</h2>
+	<div id="insert">
+		<form th:action="@{/sportsmanagementinsert}" method="POST" enctype="multipart/form-data">
+			<label>大会名</label> <input type="text" name="tournament_name" required><br>
+			<!-- 大会画像 -->
+			<label>大会画像</label> <input type="file" name="tournament_image" accept="image/*" required><br> <input
+				type="submit" value="登録">
+		</form>
+	</div>
+
+
 	<!-- 登録済み大会データ -->
 	<h2>登録済み大会データ</h2>
 	<table>
@@ -213,16 +328,6 @@
 		</tr>
 	</table>
 
-	<!-- 新規大会データ登録 -->
-	<h2>新規大会データ登録</h2>
-	<div id="form">
-		<form th:action="@{/sportsmanagementinsert}" method="POST" enctype="multipart/form-data">
-			<label>大会名</label> <input type="text" name="tournament_name" required><br>
-			<!-- 大会画像 -->
-			<label>大会画像</label> <input type="file" name="tournament_image" accept="image/*" required><br> <input
-				type="submit" value="登録">
-		</form>
-	</div>
 
 </body>
 
