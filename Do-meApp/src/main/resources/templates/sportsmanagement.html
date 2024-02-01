@@ -5,6 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport"
 		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"
+		type="text/javascript"></script>
 
 	<title>スポーツ大会管理</title>
 	<style>
@@ -25,12 +29,12 @@
 		h1 {
 			font-size: 100px;
 			float: left;
+			color: #333;
 		}
 
 		#login {
 			padding: 10px;
 			margin: 0;
-			/* 上下の余分なスペースをなくすためにmarginをゼロに設定 */
 			text-align: center;
 			float: right;
 			border-radius: 15px;
@@ -41,19 +45,16 @@
 
 		#login p {
 			margin: 0;
-			/* p要素の上下の余分なスペースをなくすためにmarginをゼロに設定 */
 		}
 
 		img {
 			float: right;
+			max-width: 100px;
+			max-height: 100px;
 		}
 
 		hr {
 			clear: both;
-		}
-
-		h1 {
-			color: #333;
 		}
 
 		#home {
@@ -79,69 +80,11 @@
 		th {
 			background-color: #4caf50;
 			color: white;
-		}
-
-
-		img {
-			max-width: 100px;
-			max-height: 100px;
-		}
-
-		#login p {
-			margin: 0;
-		}
-
-		img {
-			float: right;
-		}
-
-		hr {
-			clear: both;
-		}
-
-		button {
-			float: left;
-		}
-
-		h2 {
-			text-align: center;
-			clear: both;
-		}
-
-		#menu {
 			text-align: center;
 		}
 
+		#form form,
 		#insert {
-			max-width: 300px;
-			margin: 20px auto;
-			padding: 20px;
-			background-color: #fff;
-			border-radius: 8px;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		}
-
-		#insert input {
-			width: 100%;
-			padding: 10px;
-
-			box-sizing: border-box;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-		}
-
-		#insert input[type="submit"] {
-			background-color: #f44336;
-			color: #fff;
-			cursor: pointer;
-		}
-
-		#insert input[type="submit"]:hover {
-			background-color: #d32f2f;
-		}
-
-
-		#form form {
 			max-width: 300px;
 			margin: 20px auto;
 			padding: 20px;
@@ -157,26 +100,24 @@
 			color: #555;
 		}
 
-		th {
-			text-align: center;
-		}
-
-		#form input {
+		#form input,
+		#insert input {
 			width: 100%;
 			padding: 10px;
-
 			box-sizing: border-box;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 		}
 
-		#form input[type="submit"] {
+		#form input[type="submit"],
+		#insert input[type="submit"] {
 			background-color: #f44336;
 			color: #fff;
 			cursor: pointer;
 		}
 
-		#form input[type="submit"]:hover {
+		#form input[type="submit"]:hover,
+		#insert input[type="submit"]:hover {
 			background-color: #d32f2f;
 		}
 
@@ -195,6 +136,7 @@
 		#adminmain input[type="submit"]:hover {
 			background-color: #2980b9;
 		}
+
 
 		@media screen and (max-width: 480px) {
 			h1 {
@@ -242,9 +184,7 @@
 				max-width: 100%;
 				width: 80%;
 				padding: 10px 20px;
-
 			}
-
 		}
 	</style>
 </head>
@@ -314,7 +254,13 @@
 		<tr th:each="tournament : ${selectResult}">
 			<td th:text="${tournament.tournament_id}"></td>
 			<td th:text="${tournament.tournament_name}"></td>
-			<td><img th:src="'data:image/jpeg;base64,' + ${tournament.tournament_image}" alt="Tournament Image" /></td>
+
+			<td>
+
+				<a th:href="'data:image/jpeg;base64,' + ${tournament.tournament_image}" data-lightbox="group">
+					<img th:src="'data:image/jpeg;base64,' + ${tournament.tournament_image}" windowHeight="300"></a>
+			</td>
+
 			<td th:text="${#dates.format(tournament.tournament_data, 'yyyy-MM-dd')}"></td>
 			<td>
 				<div id="form">
