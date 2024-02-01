@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport"
@@ -220,12 +219,12 @@
 	<hr>
 	<div id="adminmain">
 		<form th:action="@{/adminmain}" method="POST">
-			<input type="submit" value="ホームへ戻る" naem="adminmain">
+			<input type="submit" value="ホームへ戻る" name="adminmain">
 		</form>
 	</div>
-	<h2>予約管理</h2>
+	<h2>コート予約管理</h2>
 
-	<!-- 予約一覧を表示するテーブル -->
+	<!-- 予約一覧を表示するテーブル（コート） -->
 	<table>
 		<thead>
 			<tr>
@@ -247,8 +246,8 @@
 				<td th:text="${reservation.user_id}"></td>
 				<td>
 					<div id="form">
-						<form th:action="@{/reservationmanagement}" method="POST">
-							<input type="hidden" name="action" value="deleteReservation">
+						<form th:action="@{/coratreservationmanagement}" method="POST">
+							<input type="hidden" name="action" value="courtdeleteReservation">
 							<input type="hidden" name="reservationId" th:value="${reservation.reservation_id}"> <input
 								type="submit" value="削除">
 						</form>

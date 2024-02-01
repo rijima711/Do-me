@@ -424,11 +424,11 @@ public class DomeController {
 				"SELECT * FROM dome_reservation");
 
 		model.addAttribute("selectResult", reservations);
-
 		return "reservationmanagement";
 	}
 
-	@RequestMapping(path = "/reservationmanagement", method = RequestMethod.POST)
+	//予約管理（コート）
+	@RequestMapping(path = "/coratreservationmanagement", method = RequestMethod.POST)
 	public String handleReservationAction(Model model, @RequestParam String action, @RequestParam int reservationId) {
 		if ("deleteReservation".equals(action)) {
 			// 予約の削除処理
