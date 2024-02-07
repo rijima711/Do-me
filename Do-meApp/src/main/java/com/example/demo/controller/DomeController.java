@@ -140,6 +140,10 @@ public class DomeController {
 	public String yoyaku(String court, String date, String versus, HttpSession session,
 			RedirectAttributes redirectAttributes)
 			throws IOException {
+		if (court == null || date == "") {
+			redirectAttributes.addFlashAttribute("nullerrorMessage", "コートと日付は必須です。");
+			return "redirect:/yoyaku";
+		}
 		String year_class = (String) session.getAttribute("year_class");
 		String title = year_class + "・" + court + "コート";
 

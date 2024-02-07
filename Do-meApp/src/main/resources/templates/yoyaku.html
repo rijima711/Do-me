@@ -53,7 +53,7 @@
 			border-top: 1px solid #ccc;
 		}
 
-		button {
+		#mainmenu input {
 			margin: 15px;
 			padding: 10px;
 			font-size: 20px;
@@ -65,7 +65,7 @@
 			float: left;
 		}
 
-		button:hover {
+		#mainmenu input[type="submit"]:hover {
 			background-color: #2980b9;
 		}
 
@@ -82,7 +82,6 @@
 
 		form {
 			float: left;
-			width: 500px;
 			padding: 10px 20px;
 		}
 
@@ -172,15 +171,12 @@
 	</script>
 
 	<hr>
-	<!--
-	<div id="adminmain">
-		<form th:action="@{/yoyaku_done}" method="POST">
-			<input type="submit" value="ホームへ戻る" naem="adminmain">
+
+	<div id="mainmenu">
+		<form th:action="@{/mainmenu}" method="POST">
+			<input type="submit" value="前のページへ戻る" name="mainmenu">
 		</form>
 	</div>
-	 -->
-	<button type="button" onclick="history.back()">前のページへ戻る</button>
-
 	<form th:action="@{/yoyaku}" method="POST">
 		<label for="court">コート：</label> <select name="court" id="court">
 			<option disabled selected>選択してください。</option>
@@ -199,6 +195,9 @@
 	<!-- エラーメッセージがあれば表示する -->
 	<script th:if="${errorMessage}">
 		alert("予約が重複しています。");
+	</script>
+	<script th:if="${nullerrorMessage}">
+		alert("コートと日付は必須です。");
 	</script>
 </body>
 
