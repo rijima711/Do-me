@@ -285,22 +285,24 @@ public class DomeController {
 	}
 
 	@RequestMapping(path = "/administrator", method = RequestMethod.POST)
-	public String administrator(String user_id, String password, RedirectAttributes redirectAttributes,
+	public String administrator(String user_id, String user_name, String password,
+			RedirectAttributes redirectAttributes,
 			HttpSession session, String slogin) throws IOException {
 		if (slogin != null) {
 			return "redirect:/slogin";
 		}
 
 		List<Map<String, Object>> resultList = jdbcTemplate
-				.queryForList("SELECT * FROM dome_administrator WHERE user_id = ? and password = ?", user_id, password);
+				.queryForList("SELECT * FROM dome_administrator WHERE user_name = ? and password = ?", user_name,
+						password);
 
 		// 先にIDの検証
 		if (!CollectionUtils.isEmpty(resultList)) {
-			String user_name = (String) resultList.get(0).get("user_name");
+			String user = (String) resultList.get(0).get("user_name");
 
 			// セッションに必要な情報を保存
 			session.setAttribute("user_id", user_id);
-			session.setAttribute("user_name", user_name);
+			session.setAttribute("user_name", user);
 			session.setAttribute("password", password);
 
 			return "redirect:/management";
@@ -399,6 +401,11 @@ public class DomeController {
 			jdbcTemplate.update("INSERT INTO dome_administrator (user_name, password, del_flg) VALUES (?, ?, ?)",
 					user_name, password, 0);
 
+			// 登録が成功した場合、登録情報をモデルに追加
+			model.addAttribute("registrationSuccess", true);
+			model.addAttribute("user_name", user_name);
+			model.addAttribute("password", password);
+
 			return "administratorregistration";
 		}
 	}
@@ -424,11 +431,11 @@ public class DomeController {
 				"SELECT * FROM dome_reservation");
 
 		model.addAttribute("selectResult", reservations);
+
 		return "reservationmanagement";
 	}
 
-	//予約管理（コート）
-	@RequestMapping(path = "/coratreservationmanagement", method = RequestMethod.POST)
+	@RequestMapping(path = "/reservationmanagement", method = RequestMethod.POST)
 	public String handleReservationAction(Model model, @RequestParam String action, @RequestParam int reservationId) {
 		if ("deleteReservation".equals(action)) {
 			// 予約の削除処理
