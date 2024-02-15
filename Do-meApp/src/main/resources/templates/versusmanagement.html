@@ -7,7 +7,7 @@
 		content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>予約管理</title>
+	<title>対戦予約管理</title>
 	<style>
 		body {
 			font-family: 'Arial', sans-serif;
@@ -223,14 +223,12 @@
 			<input type="submit" value="ホームへ戻る" name="adminmain">
 		</form>
 	</div>
-	<h2>予約管理
-		<!--&emsp;&emsp;<a th:href="@{/versusmanagement}" id="myLink">対戦予約管理</a>-->
-	</h2>
+	<h2><a th:href="@{/reservationmanagement}" id="myLink">予約管理</a>&emsp;&emsp;対戦予約管理</h2>
 	<script>
 		window.onload = function () {
 			document.getElementById("myLink").onclick = function () {
 				// ここに遷移先のURLを指定します
-				window.location.href = "/versusmanagement";
+				window.location.href = "/reservationmanagement";
 			};
 		};
 	</script>
@@ -238,28 +236,30 @@
 	<table>
 		<thead>
 			<tr>
+				<th>対戦ID</th>
 				<th>予約ID</th>
 				<th>日付</th>
 				<th>コート</th>
-				<th>対戦相手</th>
-				<th>ユーザーID</th>
+				<th>対戦クラス①</th>
+				<th>対戦クラス②</th>
 				<th>削除</th>
 			</tr>
 		</thead>
 		<tbody>
 			<!-- ここに予約情報を表示するためのデータを動的に生成 -->
-			<tr th:each="reservation : ${selectResult}">
-				<td th:text="${reservation.reservation_id}"></td>
-				<td th:text="${reservation.date}"></td>
-				<td th:text="${reservation.court}"></td>
-				<td th:text="${reservation.versus}"></td>
-				<td th:text="${reservation.user_id}"></td>
+			<tr th: each="versus : ${selectResult}">
+				<td th: text="${versus.versus_id}"></td>
+				<td th: text="${versus.reservation_id}"></td>
+				<td th: text="${versus.date}"></td>
+				<td th: text="${versus.court}"></td>
+				<td th: text="${versus.year_class}"></td>
+				<td th: text="${versus.versus_class}"></td>
 				<td>
 					<div id="form">
-						<form th:action="@{/reservationmanagement}" method="POST">
-							<input type="hidden" name="action" value="deleteReservation">
-							<input type="hidden" name="reservationId" th:value="${reservation.reservation_id}"> <input
-								type="submit" value="削除">
+						<form th: action="@{/versusmanagement}" method="POST">
+							<input type="hidden" name="action" value="deleteVersus">
+							<input type="hidden" name="versusId" th:value="${versus.versus_id}"> <input type="submit"
+								value="削除">
 						</form>
 					</div>
 				</td>

@@ -290,26 +290,30 @@ public class DomeController {
 
 	@RequestMapping(path = "/administrator", method = RequestMethod.POST)
 	public String administrator(String user_id, String password, RedirectAttributes redirectAttributes,
-			HttpSession session, String slogin) throws IOException {
+			HttpSession session, String slogin, String user_name) throws IOException {
 		if (slogin != null) {
 			return "redirect:/slogin";
 		}
 
 		List<Map<String, Object>> resultList = jdbcTemplate
-				.queryForList("SELECT * FROM dome_administrator WHERE user_id = ? and password = ?", user_id, password);
+				.queryForList("SELECT * FROM dome_administrator WHERE user_name = ? and password = ?", user_name,
+						password);
 
 		// 先にIDの検証
 		if (!CollectionUtils.isEmpty(resultList)) {
-			String user_name = (String) resultList.get(0).get("user_name");
+			String user = (String) resultList.get(0).get("user_name");
 
 			// セッションに必要な情報を保存
 			session.setAttribute("user_id", user_id);
-			session.setAttribute("user_name", user_name);
+			session.setAttribute("user_name", user);
 			session.setAttribute("password", password);
 
 			return "redirect:/management";
+		} else {
+			redirectAttributes.addFlashAttribute("errorMessage", "ユーザーIDかパスワードが正しくありません");
+			return "redirect:/administrator";
 		}
-		return "redirect:/administrator";
+
 	}
 
 	@RequestMapping(path = "/management", method = RequestMethod.GET)
@@ -447,6 +451,38 @@ public class DomeController {
 		model.addAttribute("selectResult", reservations);
 
 		return "redirect:/reservationmanagement";
+	}
+
+	//対戦予約の削除
+	@RequestMapping(path = "/versusmanagement", method = RequestMethod.GET)
+	public String versusmanagement(Model model, HttpSession session) {
+		// セッションからユーザーIDを取得
+		String username = (String) session.getAttribute("user_name");
+		model.addAttribute("user_name", username);
+
+		// 予約情報を取得
+		List<Map<String, Object>> versus = jdbcTemplate.queryForList(
+				"select b.versus_id,a.reservation_id,a.date,a.court,c.year_class,b.versus_class from dome_reservation a inner join dome_versus b on a.reservation_id = b.reservation_id inner join dome_user c on a.user_id = c.user_id;");
+
+		model.addAttribute("selectResult", versus);
+
+		return "versusmanagement";
+	}
+
+	@RequestMapping(path = "/versusmanagement", method = RequestMethod.POST)
+	public String handleVersusAction(Model model, @RequestParam String action, @RequestParam int versusId) {
+		if ("deleteVersus".equals(action)) {
+			// 予約の削除処理
+			jdbcTemplate.update("DELETE FROM dome_versus WHERE versus_id = ?", versusId);
+		}
+
+		// 再度予約情報を取得して表示
+		List<Map<String, Object>> versus = jdbcTemplate.queryForList(
+				"select b.versus_id,a.reservation_id,a.date,a.court,c.year_class,b.versus_class from dome_reservation a inner join dome_versus b on a.reservation_id = b.reservation_id inner join dome_user c on a.user_id = c.user_id;");
+
+		model.addAttribute("selectResult", versus);
+
+		return "redirect:/versusmanagement";
 	}
 
 	//スポーツ大会管理

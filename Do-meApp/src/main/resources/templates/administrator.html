@@ -108,10 +108,13 @@
 <body>
 	<h1>MANAGEMENT<br class="sp_br"> LOGIN PAGE</h1>
 	<form th:action="@{/administrator}" method="POST">
-		<label>管理者ID</label> <input type="text" name="user_id" id="user_id">
+		<label>ユーザーネーム</label> <input type="text" name="user_name" id="user_name">
 		<label>パスワード</label> <input type="password" name="password" id="password"> <input type="submit"
 			value="ログイン"><input type="submit" value="ユーザーログイン" name="slogin">
 	</form>
+	<script th:if="${errorMessage}">
+		alert("ユーザーネームまたはパスワードが正しくありません");
+	</script>
 </body>
 
 </html>
